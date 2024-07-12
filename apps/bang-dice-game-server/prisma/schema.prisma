@@ -1,0 +1,62 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String?
+  description String?
+  players     Player[]
+}
+
+model Player {
+  id          String     @id @default(cuid())
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  name        String?
+  lifePoints  Int?
+  role        Role?      @relation(fields: [roleId], references: [id])
+  roleId      String?
+  character   Character? @relation(fields: [characterId], references: [id])
+  characterId String?
+}
+
+model Character {
+  id                 String   @id @default(cuid())
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  startingLifePoints Int?
+  name               String?
+  specialAbility     String?
+  players            Player[]
+}
+
+model Game {
+  id          String          @id @default(cuid())
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  status      EnumGameStatus?
+  currentTurn Int?
+}
+
+model Dice {
+  id        String             @id @default(cuid())
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  faceValue EnumDiceFaceValue?
+}
+
+enum EnumGameStatus {
+  Option1
+}
+
+enum EnumDiceFaceValue {
+  Option1
+}
